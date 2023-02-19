@@ -10,9 +10,10 @@ public class Task3 {
         rndFillList(arrList, 10);
         System.out.println(arrList);
 
-        System.out.println(Collections.max(arrList));
-        System.out.println(Collections.min(arrList));
-        System.out.println(average(arrList));
+        System.out.printf("Максимальный элемент: %d\n", Collections.max(arrList));
+        System.out.printf("Минимальный элемент: %d\n", Collections.min(arrList));
+        System.out.printf("Среднее арифметическое: %f\n", average(arrList));
+
     }
     static void rndFillList(ArrayList list, int size) {
         Random random = new Random();
