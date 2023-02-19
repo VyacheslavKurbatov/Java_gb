@@ -58,15 +58,4 @@ public class Task3 {
         }
 
     }
-    static <T> List<T> convertToList(Set<T> set)
-    {
-        List<T> items = new ArrayList<>();
-
-        for (T e: set) {
-            items.add(e);
-        }
-
-        return items;
-    }
-
 }
