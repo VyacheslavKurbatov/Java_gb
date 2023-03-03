@@ -8,19 +8,12 @@
 3 - Операционная система
 4 - Цвет
 
-Выберите параметр поиска:
-
-Такого параметра нет
----------------------
-
 Далее нужно запросить минимальные значения для указанных критериев - сохранить параметры фильтрации можно также в Map.
 Отфильтровать ноутбуки из первоначального множества и вывести проходящие по условиям.
 */
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Task1 {
     public static void main(String[] args) {
@@ -70,10 +63,11 @@ public class Task1 {
         laptopArrayList.add(laptop6);
 
 //        System.out.println(laptopLinkedList);
-        searchFilter(laptopArrayList);
+        List<Laptop> result = searchFilter(laptopArrayList);
+        System.out.println(result);
     }
 
-    public static void searchFilter(List<Laptop> laptopList) {
+    public static List searchFilter(List<Laptop> laptopList) {
         int numFirstMenu = inputDataMainMenu("1 - ОЗУ\n" +
                 "2 - Объем ЖД\n" +
                 "3 - Операционная система\n" +
@@ -82,11 +76,13 @@ public class Task1 {
                 "Выберите параметр поиска: ", "Такого параметра нет\n" +
                 "---------------------");
 
+        Map<Integer, String> map = new HashMap<>();
 
         switch (numFirstMenu){
             case 1:
                 int numSecondMenu = inputDataSecondMenu("Введите объем ОЗУ для поиска: ");
-                System.out.println(numSecondMenu);
+                map.put(1, Integer.toString(numSecondMenu));
+//                System.out.println(numSecondMenu);
                 break;
             case 2:
 
@@ -100,6 +96,11 @@ public class Task1 {
                 break;
         }
 
+        List<Laptop> result = laptopList.stream()
+                .filter(elment -> elment.getRam() == Integer.parseInt(map.get(1).trim()))
+                .collect(Collectors.toList());
+
+        return result;
 //        System.out.println(numSecondMenu);
     }
     public static Integer inputDataMainMenu(String text1, String text2){
