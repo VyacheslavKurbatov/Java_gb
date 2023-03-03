@@ -11,15 +11,16 @@
 Далее нужно запросить минимальные значения для указанных критериев - сохранить параметры фильтрации можно также в Map.
 Отфильтровать ноутбуки из первоначального множества и вывести проходящие по условиям.
 */
-
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Task1 {
     public static void main(String[] args) {
         Laptop laptop1 = new Laptop("ASUS",
                 "TUF Gaming",
-                16,
+                8,
                 1024,
                 "Windows",
                 "Черный");
@@ -27,11 +28,11 @@ public class Task1 {
                 "Inspiron",
                 8,
                 1024,
-                "linux",
+                "Linux",
                 "Серый");
         Laptop laptop3 = new Laptop("Acer",
                 "Aspire",
-                32,
+                8,
                 512,
                 "Windows",
                 "Серый");
@@ -62,50 +63,93 @@ public class Task1 {
         laptopArrayList.add(laptop5);
         laptopArrayList.add(laptop6);
 
-//        System.out.println(laptopLinkedList);
+
         List<Laptop> result = searchFilter(laptopArrayList);
-        System.out.println(result);
+//        System.out.println(result);
+        System.out.println("По вашему запросу найден(ы): ");
+        for (Laptop res: result) {
+            res.print();
+        }
+        if (result.size() < 1){
+            System.out.println("По вашему запросу ничего не найдено");
+        }
     }
 
-    public static List searchFilter(List<Laptop> laptopList) {
-        int numFirstMenu = inputDataMainMenu("1 - ОЗУ\n" +
-                "2 - Объем ЖД\n" +
-                "3 - Операционная система\n" +
-                "4 - Цвет\n" +
-                "\n" +
-                "Выберите параметр поиска: ", "Такого параметра нет\n" +
-                "---------------------");
+    public static List<Laptop> searchFilter(List<Laptop> laptopList) {
+        boolean flag = false;
+        var ref = new Object() {
+            Map<Integer, String> map = new HashMap<>();
+        };
 
-        Map<Integer, String> map = new HashMap<>();
+        while (!flag){
+            clearsScreen();
+            int numFirstMenu = mainMenu();
 
-        switch (numFirstMenu){
-            case 1:
-                int numSecondMenu1 = inputDataSecondMenu("Введите объем ОЗУ для поиска: ");
-                map.put(1, Integer.toString(numSecondMenu1));
-                System.out.println(numSecondMenu1);
-                break;
-            case 2:
-                int numSecondMenu2 = inputDataSecondMenu("Введите объем ЖД для поиска: ");
-                map.put(2, Integer.toString(numSecondMenu2));
-                break;
+            ref.map = fillFindMap(numFirstMenu, ref.map);
+            String question = inputDataString("Добавить критерий поиска? Y/N : ");
 
-            case 3:
+            boolean flag2 = false;
+            while (!flag2) {
+                if (question.equals("N") || question.equals("n")) {
+                    flag = true;
+                    flag2 = true;
+                } else if (question.equals("Y") || question.equals("y")) {
+                    flag2 = true;
+                } else {
+                    System.out.println("Введите Y если ДА\n" + "Введите N если НЕТ");
+                    question = inputDataString("Добавить критерий поиска? Y/N : ");
+                }
+            }
+        }
+//        System.out.println(map);
+//        List<Laptop> result = new LinkedList<>();
 
-                break;
-            case 4:
+        List<Laptop> result = new LinkedList<>();
 
-                break;
+        for (Map.Entry entry: ref.map.entrySet())
+        {
+            int key = (Integer)entry.getKey();
+
+            if (key == 1) {
+                result = laptopList.stream()
+                        .filter(elment -> elment.getRam() == Integer.parseInt(ref.map.get(1).trim()))
+                        .collect(Collectors.toList());
+            } else if (key == 2){
+                if (result.size() > 0){
+                    result = result.stream()
+                            .filter(elment -> elment.getHd() == Integer.parseInt(ref.map.get(2).trim()))
+                            .collect(Collectors.toList());
+                } else {
+                    result = laptopList.stream()
+                            .filter(elment -> elment.getHd() == Integer.parseInt(ref.map.get(2).trim()))
+                            .collect(Collectors.toList());
+                }
+            } else if (key == 3){
+                if (result.size() > 0){
+                    result = result.stream()
+                            .filter(elment -> elment.getOperatingSystem().equals(ref.map.get(3).trim()))
+                            .collect(Collectors.toList());
+                } else {
+                    result = laptopList.stream()
+                            .filter(elment -> elment.getOperatingSystem().equals(ref.map.get(3).trim()))
+                            .collect(Collectors.toList());
+                }
+            } else if (key == 4) {
+                if (result.size() > 0){
+                    result = result.stream()
+                            .filter(elment -> elment.getOperatingSystem().equals(ref.map.get(4).trim()))
+                            .collect(Collectors.toList());
+                } else {
+                    result = laptopList.stream()
+                            .filter(elment -> elment.getOperatingSystem().equals(ref.map.get(4).trim()))
+                            .collect(Collectors.toList());
+                }
+            }
         }
 
-        List<Laptop> result = laptopList.stream()
-                .filter(elment -> elment.getRam() == Integer.parseInt(map.get(1).trim())
-                        && elment.getHd() == Integer.parseInt(map.get(2).trim()))
-                .collect(Collectors.toList());
-
         return result;
-//        System.out.println(numSecondMenu);
     }
-    public static Integer inputDataMainMenu(String text1, String text2){
+    public static Integer inputDataInt(String text1, String text2, int maxValue){
         Scanner iScanner = new Scanner(System.in);
         boolean flag = false;
         int inputData = 0;
@@ -113,22 +157,72 @@ public class Task1 {
             System.out.print(text1);
 
             inputData = iScanner.nextInt();
-            if (inputData <= 0 || inputData > 4){
+            if (inputData <= 0 || inputData > maxValue){
                 System.out.println(text2);
             } else {
                 flag = true;
             }
         }
-
-        iScanner.close();
         return inputData;
     }
-    public static int inputDataSecondMenu(String text){
-        Scanner scan = new Scanner(System.in);
+    public static String inputDataString(String text){
+        Scanner iScanner = new Scanner(System.in);
         System.out.print(text);
-        int inputData = scan.nextInt();
-        scan.close();
+        String inputData = iScanner.nextLine();
         return inputData;
+    }
+    public static Map<Integer, String> fillFindMap(int num, Map<Integer, String> map){
+        switch (num){
+            case 1:
+                int numSecondMenu1 = inputDataInt("Введите объем ОЗУ для поиска: ", "", 1000);
+                map.put(1, Integer.toString(numSecondMenu1));
+                break;
+            case 2:
+                int numSecondMenu2 = inputDataInt("Введите объем ЖД для поиска: ", "", 1000);
+                map.put(2, Integer.toString(numSecondMenu2));
+                break;
+            case 3:
+                System.out.println("1 - Windows\n" +
+                        "2 - Linux\n" +
+                        "3 - Macintosh");
+                int numSecondMenu3 = inputDataInt("Выберите операционную систему: ", "",3);
 
+                switch (numSecondMenu3){
+                    case 1:
+                        map.put(3, "Windows");
+                        break;
+                    case 2:
+                        map.put(3, "Linux");
+                        break;
+                    case 3:
+                        map.put(3, "Macintosh");
+                        break;
+                }
+
+                break;
+            case 4:
+                String inputSecondMenu4 = inputDataString("Введите цвет: ");
+                map.put(4, inputSecondMenu4);
+                break;
+        }
+        return map;
+    }
+    public static Integer mainMenu(){
+        int num = inputDataInt("1 - ОЗУ\n" +
+                "2 - Объем ЖД\n" +
+                "3 - Операционная система\n" +
+                "4 - Цвет\n" +
+                "\n" +
+                "Выберите параметр поиска: ", "Такого параметра нет\n" +
+                "---------------------", 4);
+        return num;
+    }
+    public static void clearsScreen(){
+        try {
+            if (System.getProperty("os.name").contains("Windows"))
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            else
+                Runtime.getRuntime().exec("clear");
+        } catch (IOException | InterruptedException ex) {}
     }
 }

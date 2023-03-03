@@ -128,4 +128,8 @@ public class Laptop {
         color = inputColor;
     }
 
+    public void print(){
+        System.out.println(brand + " " + type + ", " + ram + " ГБ ОЗУ, " + hd + " ГБ," + "ОС " + operatingSystem
+        + ", " + color);
+    }
 }
