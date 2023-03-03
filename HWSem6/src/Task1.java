@@ -80,12 +80,13 @@ public class Task1 {
 
         switch (numFirstMenu){
             case 1:
-                int numSecondMenu = inputDataSecondMenu("Введите объем ОЗУ для поиска: ");
-                map.put(1, Integer.toString(numSecondMenu));
-//                System.out.println(numSecondMenu);
+                int numSecondMenu1 = inputDataSecondMenu("Введите объем ОЗУ для поиска: ");
+                map.put(1, Integer.toString(numSecondMenu1));
+                System.out.println(numSecondMenu1);
                 break;
             case 2:
-
+                int numSecondMenu2 = inputDataSecondMenu("Введите объем ЖД для поиска: ");
+                map.put(2, Integer.toString(numSecondMenu2));
                 break;
 
             case 3:
@@ -97,7 +98,8 @@ public class Task1 {
         }
 
         List<Laptop> result = laptopList.stream()
-                .filter(elment -> elment.getRam() == Integer.parseInt(map.get(1).trim()))
+                .filter(elment -> elment.getRam() == Integer.parseInt(map.get(1).trim())
+                        && elment.getHd() == Integer.parseInt(map.get(2).trim()))
                 .collect(Collectors.toList());
 
         return result;
