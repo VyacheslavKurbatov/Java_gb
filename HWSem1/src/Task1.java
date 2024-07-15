@@ -22,5 +22,6 @@ public class Task1 {
             res_fact *= index;
         }
         System.out.printf("fact = %d", res_fact);
+        System.out.println("новое");
     }
 }
